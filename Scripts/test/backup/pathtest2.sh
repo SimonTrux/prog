@@ -42,18 +42,18 @@ suffixlist=`find ./* -maxdepth 0 -not -path '*\/.*' | cut -d . -f3- | sed '/^\s*
 
 #find . | cut -d . -f3- | sed '/^\s*$/d' | head -10 | tr '\n' ',' | sed 's/,/, /g'
 
-#echo "Suffix are : $suffixlist\n"
+echo "Suffix are : $suffixlist\n"
 
 suffixtab=($suffixlist)
-#echo "\nIs there a suffix sh ? \n"
+echo "\nIs there a suffix sh ? \n"
 
 
-for ((sfxnb = 0; sfxnb<${#suffixtab[@]}; sfxnb++)) do
-	mkdir -p $urfiledate/p/o/${suffixtab[sfxnb]}
+for ((i = 0; i<${#suffixtab[@]}; i++)) do
+	mkdir -p $urfiledate/p/o/${suffixtab[i]}
 #	echo "$i" "${suffixtab[i]}"
 done
 
-echo "There are $sfxnb suffixes : $suffixlist\n"
+echo "$i"
 
 
 #echo "Now creating directories"
@@ -62,31 +62,14 @@ echo "There are $sfxnb suffixes : $suffixlist\n"
 
 #for  
 
-photos=`find ./* -maxdepth 0 -type f | cut -d / -f2 | tr '\n' ' '`
+photos=`find ./* -maxdepth 0 -type f | tr '\n' ' '`
 photolist=($photos)
-nbofphoto=`find ./* -maxdepth 0 -type f | wc -l | tr -d ' '`
-echo "There are $nbofphoto photos to be sorted on that directory"
+nbofphoto=`find ./* -maxdepth 0 -type f | wc -l`
+echo $nbofphoto
 
-#while (( $j < $nbofphoto ]
-#	do
-#	echo $photolist[j]
-#	j++
-#done
 
-echo ${photolist[@]}
 
-#noextname=`rev | cut -d . -f2 | rev`
 
-k=0
-for ((j = 0; j<${#photolist[@]}; j++)) do
-#	if [[ "${photolist[$((j + 1))]}" = "${photolist[j]}" ]]	
-#		then
-#		echo toto
-#	fi
-	((k++))
-	echo ${k}
-	echo ${photolist[j]}
-done
 
 #OLD FOR LOOP
 #for ((i = 1; i<${photolist[@]}; i++))
