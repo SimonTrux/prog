@@ -7,7 +7,7 @@
 
 sv="0.1" #sleep value for program speed
 echo; sleep $sv
-echo "Welcome to ExportPro v0.1.1 by Simon."; sleep $sv
+echo "Welcome to ExportPro v0.1 by Simon."; sleep $sv
 echo; sleep $sv
 echo "ExportPro is a simple tool that will handle automaticly the renaming of photos."; sleep $sv
 echo "It will : ";  sleep $sv
@@ -60,53 +60,6 @@ echo "\nSelected directory : "$localpath"\n"
 cd "$localpath"
 sleep 1
 
-
-			#GETTING THE DATE FOR DIR
-
-#old different syntax		filedate="$(stat -f "%B" ./pathtest.sh)"
-#old one 			filedate=`stat -f "%B" ./pathtest.sh`
-filedate=`find ./* -maxdepth 0 -type f | stat -f "%B" * | sort | head -1`
-if [ -z $filedate ];
-	then filedate=`date +%s`
-fi
-
-urfiledate=`date -r $filedate '+%Y%m%d'`
-#echo "\nCreating directory $urfiledate\n"; sleep $sv
-
-			#FINDING THE DIFFERENT EXTENSIONS
-
-suffixlist=`find ./* -maxdepth 0 -not -path '*\/.*' | tr '[:upper:]' '[:lower:]' | cut -d . -f3- | sed '/^\s*$/d' | head -20 | sort -u | tr '\n' ' '`
-suffixtab=($suffixlist)
-
-for ((nb = 0; nb<${#suffixtab[@]}; nb++))
-do :
-done
-
-if [ "$nb" -eq "0" ];
-	then
-	echo "No file type detected in this directory."; sleep $sv
-	echo ;sleep $sv
-	echo "------ Program now exiting ------"; sleep $sv
-	echo ; sleep $sv
-	exit
-fi
-echo "There are $nb file types : $suffixlist."; sleep $sv
-
-			#MAKING THE DIRECTORIES
-
-mkdir -p $urfiledate/p/o
-for ((sfxnb = 0; sfxnb<${#suffixtab[@]}; sfxnb++)) do
-	mkdir -p $urfiledate/p/o/${suffixtab[sfxnb]}
-done
-echo "Now creating appropriate directories\n"; sleep 1
-
-			#NOW LISTING FILES AND EXTENSIONS
-
-photos=`find ./*.* -maxdepth 0 -type f | sort | cut -d / -f2 | tr '\n' ' ' | tr '[:upper:]' '[:lower:]'`
-photolist=($photos)
-nbofphoto=`find ./*.* -maxdepth 0 -type f | wc -l | tr -d ' '`
-echo "There are $nbofphoto files to be sorted on this directory.\n"; sleep $sv
-
 			#GETTING DESIRED PREFIX
 
 echo "You may now enter the chosen prefix for renaming."
@@ -121,14 +74,43 @@ else
 	echo "The prefix you chose is $fileprefix  \n"; sleep 1
 
 fi
+			#GETTING THE DATE FOR DIR
+
+#old different syntax		filedate="$(stat -f "%B" ./pathtest.sh)"
+#old one 			filedate=`stat -f "%B" ./pathtest.sh`
+filedate=`find . -type f | stat -f "%B" * | sort | head -1`
+urfiledate=`date -r $filedate '+%Y%m%d'`
+#echo "\nCreating directory $urfiledate\n"; sleep $sv
+mkdir -p $urfiledate/p/o
+
+			#FINDING THE DIFFERENT EXTENSIONS
+
+suffixlist=`find ./* -maxdepth 0 -not -path '*\/.*' | tr '[:upper:]' '[:lower:]' | cut -d . -f3- | sed '/^\s*$/d' | head -20 | sort -u | tr '\n' ' '`
+
+suffixtab=($suffixlist)
+
+for ((sfxnb = 0; sfxnb<${#suffixtab[@]}; sfxnb++)) do
+	mkdir -p $urfiledate/p/o/${suffixtab[sfxnb]}
+done
+
+echo "There are $sfxnb file extensions : $suffixlist."; sleep $sv
+
+			#NOW LISTING FILES AND EXTENSIONS
+
+photos=`find ./* -maxdepth 0 -type f | sort | cut -d / -f2 | tr '\n' ' ' | tr '[:upper:]' '[:lower:]'`
+photolist=($photos)
+nbofphoto=`find ./* -maxdepth 0 -type f | wc -l | tr -d ' '`
+echo "There are $nbofphoto files to be sorted on this directory.\n"; sleep $sv
+echo "Now creating appropriate directories\n"; sleep 1
+
 
 			#DEFINE VARIABLES TO 
 
-noEXTphotos=`find ./*.* -maxdepth 0 -type f | sort | cut -d / -f2 | rev | cut -d . -f2- | rev | tr '\n' ' '`
+noEXTphotos=`find ./* -maxdepth 0 -type f | sort | cut -d / -f2 | rev | cut -d . -f2- | rev | tr '\n' ' '`
 noEXTphotolist=($noEXTphotos)
-EXTENSIONS=`find ./*.* -maxdepth 0 -type f | sort | rev | cut -d . -f1 | rev | tr '[:upper:]' '[:lower:]' | tr '\n' ' '`
+EXTENSIONS=`find ./* -maxdepth 0 -type f | sort | rev | cut -d . -f1 | rev | tr '[:upper:]' '[:lower:]' | tr '\n' ' '`
 EXTlist=($EXTENSIONS)
-iEXTENSIONS=`find ./*.* -maxdepth 0 -type f | sort | rev | cut -d . -f1 | rev | tr '\n' ' '`
+iEXTENSIONS=`find ./* -maxdepth 0 -type f | sort | rev | cut -d . -f1 | rev | tr '\n' ' '`
 iEXTlist=($iEXTENSIONS)
 			#RENAMING AND MOVING
 
@@ -170,7 +152,6 @@ done
 			#ENDING MESSAGE AND EXIT
 
 echo "\nProgram sucessfully executed."; sleep $sv
-echo "-------- Now exiting --------"; sleep $sv
 echo; sleep $sv
 echo "Thanks for using ExportPro v0.1 and have a good day !"; sleep $sv
 echo; sleep $sv
